@@ -1,19 +1,13 @@
 {
   "name": "sdc.transportation_dev",
   "measure_not_found": [
-    "/home/runner/work/sdc.transportation_dev/sdc.transportation_dev/Population Characteristics/data/distribution/ncr_cttr_acs_2016_2020_vehicles.csv.xz",
     "/home/runner/work/sdc.transportation_dev/sdc.transportation_dev/Population Characteristics/data/distribution/ncr_cttr_acs_2016_2020_commutes.csv.xz",
-    "/home/runner/work/sdc.transportation_dev/sdc.transportation_dev/Population Characteristics/data/distribution/ncr_cttr_acs_2016_2020_carpools.csv.xz"
+    "/home/runner/work/sdc.transportation_dev/sdc.transportation_dev/Population Characteristics/data/distribution/ncr_cttr_acs_2016_2020_carpools.csv.xz",
+    "/home/runner/work/sdc.transportation_dev/sdc.transportation_dev/Population Characteristics/data/distribution/ncr_cttr_acs_2016_2020_vehicles.csv.xz"
   ],
   "count": 9,
-  "utc_audited": "2022-10-18 22:51:31",
+  "utc_audited": "2022-11-07 16:22:51",
   "data": [
-    {
-      "name": "temp",
-      "path": "Cost/code/distribution/temp",
-      "md5": "d41d8cd98f00b204e9800998ecf8427e",
-      "size": 0
-    },
     {
       "name": "distribution.R",
       "path": "Cost/data/distribution/distribution.R",
@@ -22,27 +16,15 @@
     },
     {
       "name": "temp",
-      "path": "Cost/docs/distribution/temp",
+      "path": "Cost/code/distribution/temp",
       "md5": "d41d8cd98f00b204e9800998ecf8427e",
       "size": 0
     },
     {
       "name": "temp",
-      "path": "Population Characteristics/code/distribution/temp",
+      "path": "Cost/docs/distribution/temp",
       "md5": "d41d8cd98f00b204e9800998ecf8427e",
       "size": 0
-    },
-    {
-      "name": "ncr_cttr_acs_2016_2020_vehicles.csv.xz",
-      "path": "Population Characteristics/data/distribution/ncr_cttr_acs_2016_2020_vehicles.csv.xz",
-      "md5": "54af045cf8bd5fd2b5e19bd9aa59d735",
-      "size": 27848
-    },
-    {
-      "name": "ncr_cttr_acs_2016_2020_commutes.csv.xz",
-      "path": "Population Characteristics/data/distribution/ncr_cttr_acs_2016_2020_commutes.csv.xz",
-      "md5": "006b733a3653ae813a4249a968e78075",
-      "size": 26344
     },
     {
       "name": "measure_info.json",
@@ -51,10 +33,28 @@
       "size": 2238
     },
     {
+      "name": "ncr_cttr_acs_2016_2020_commutes.csv.xz",
+      "path": "Population Characteristics/data/distribution/ncr_cttr_acs_2016_2020_commutes.csv.xz",
+      "md5": "006b733a3653ae813a4249a968e78075",
+      "size": 26344
+    },
+    {
       "name": "ncr_cttr_acs_2016_2020_carpools.csv.xz",
       "path": "Population Characteristics/data/distribution/ncr_cttr_acs_2016_2020_carpools.csv.xz",
       "md5": "1a3594699a8eec1e812fed3619217c42",
       "size": 28516
+    },
+    {
+      "name": "ncr_cttr_acs_2016_2020_vehicles.csv.xz",
+      "path": "Population Characteristics/data/distribution/ncr_cttr_acs_2016_2020_vehicles.csv.xz",
+      "md5": "54af045cf8bd5fd2b5e19bd9aa59d735",
+      "size": 27848
+    },
+    {
+      "name": "temp",
+      "path": "Population Characteristics/code/distribution/temp",
+      "md5": "d41d8cd98f00b204e9800998ecf8427e",
+      "size": 0
     },
     {
       "name": "temp",
