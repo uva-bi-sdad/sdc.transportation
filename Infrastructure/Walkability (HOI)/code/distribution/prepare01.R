@@ -3,8 +3,11 @@ original <- "./Infrastructure/Walkability (HOI)/data/original/WalkabilityIndex.z
 working <- "./Infrastructure/Walkability (HOI)/data/working/"
 unzip(zipfile = original, exdir = working)
 
+library(dplyr)
 library(sf)
 library(readxl)
+library(geojsonio)
+library(ggplot2)
 fc <- sf::st_read("./Infrastructure/Walkability (HOI)/data/working/Natl_WI.gdb")
 
 # Info from methodology ppt:
@@ -18,9 +21,7 @@ fc <- sf::st_read("./Infrastructure/Walkability (HOI)/data/working/Natl_WI.gdb")
 #url <- "https://geodata.epa.gov/arcgis/rest/services/OA/WalkabilityIndex/MapServer/0"
 #df <- esri2sf(url)
 
-# Aggregate to Census tract weighting by
-
-library(dplyr)
+# Aggregate to Census tract weighting by population
 
 crosswalk_url <- "https://raw.githubusercontent.com/uva-bi-sdad/sdc.geographies/main/VA/State%20Geographies/Health%20Districts/2020/data/distribution/va_ct_to_hd_crosswalk.csv"
 
@@ -45,11 +46,42 @@ hd <- combined %>% distinct(hd_geoid, hd_NatWalkInd) %>%
   mutate(hd_NatWalkInd_zscore = (hd_NatWalkInd-mean(hd_NatWalkInd))/sd(hd_NatWalkInd)) %>%
   rename(geoid = hd_geoid, walkability_index_raw = hd_NatWalkInd, walkability_index_zscore = hd_NatWalkInd_zscore)
 
-all <- tr %>% rbind(ct) %>% rbind(hd) %>% tidyr::pivot_longer(cols = c(walkability_index_raw, walkability_index_zscore)) %>% rename(measure = name) %>% mutate(moe = NA, year = 2020)
+all <- tr %>% rbind(ct) %>% rbind(hd) %>% tidyr::pivot_longer(cols = c(walkability_index_raw, walkability_index_zscore)) %>% rename(measure = name) %>% mutate(moe = NA, year = 2021)
 
 path_to_raw_vals <- "./Infrastructure/Walkability (HOI)/data/original/HOI V3_14 Variables_Raw Scores.xlsx"
 hoi_walkability <- read_excel(path_to_raw_vals) %>% select(geoid = CT2, Walkability)
 
-diff <- all %>% left_join(hoi_walkability, by = "geoid")
+# Calculating correlation
+diff <- all %>% left_join(hoi_walkability, by = "geoid") %>% filter(measure == "walkability_index_raw") %>% filter(!(is.na(Walkability)))
+cor(diff$value, diff$Walkability)
+# Correlation is 0.5217862, outside of range given by Rex
+# Unweighted correlation is 0.5268768
+
+shapes <- geojsonio::geojson_sf("https://raw.githubusercontent.com/uva-bi-sdad/sdc.geographies/main/VA/Census%20Geographies/Tract/2020/data/distribution/va_geo_census_cb_2020_census_tracts.geojson")
+
+diff %>% left_join(shapes, by = "geoid") %>%
+  ggplot(aes(fill = value)) +
+  geom_sf(aes(geometry = geometry), linewidth = 0) +
+  scale_fill_stepsn(
+    colours = c("purple", "yellow", "orange", "green"),
+    breaks = c(5.75, 10.50, 15.25, max(diff$value)),
+    labels = c("Least Walkable", "Below Average Walkable", "Above Average Walkable", "Most Walkable")) +
+  theme_void() +
+  labs(title = "SDAD Replicated HOI Values",
+       caption = "Blank regions have mismatched GEOIDs in the two datasets")
+
+# Bins from https://www.epa.gov/sites/default/files/2021-06/documents/national_walkability_index_methodology_and_user_guide_june2021.pdf
+diff %>% left_join(shapes, by = "geoid") %>%
+  ggplot(aes(fill = Walkability)) +
+  geom_sf(aes(geometry = geometry), linewidth = 0) +
+  scale_fill_stepsn(
+    colours = c("purple", "yellow", "orange", "green"),
+    labels = c("Least Walkable", "Below Average Walkable", "Above Average Walkable", "Most Walkable"),
+    breaks = c(5.75, 10.50, 15.25, 20)) +
+  theme_void() +
+  labs(title = "HOI V3 Walkability Raw Values",
+       caption = "Blank regions have mismatched GEOIDs in the two datasets")
+
+# Rex says it's good
 
 readr::write_csv(all, xzfile("./Infrastructure/Walkability (HOI)/data/distribution/va_hdcttr_2021_walkability_index.csv.xz", compression = 9))
